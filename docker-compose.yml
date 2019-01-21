@@ -20,7 +20,7 @@ services:
     build:
      context: ./.docker
      dockerfile: dev.base-image.alpine.Dockerfile
-    user: "1000:1000"
+    # user: "1000:1000" # Keep commented in debian like
     tty: true
     volumes:
      - ../api_pt:/app
@@ -43,13 +43,13 @@ services:
     build:
      context: ./.docker
      dockerfile: dev.base-image.alpine.Dockerfile
-    user: "1000:1000"
+    # user: "1000:1000" # Keep commented in debian like
     tty: true
     volumes:
      - ../website_pt:/app
      - ~/.cache/yarn:/usr/local/share/.cache/yarn # Map Host Yarn cache to container use same cache
     working_dir: /app
-    command: /bin/ash -c "yarn install && bower install && ./node_modules/.bin/gulp serve --environment=local"
+    command: /bin/ash -c "yarn install && bower install --allow-root && ./node_modules/.bin/gulp serve --environment=local"
     links:
       - api_pt
     depends_on:
