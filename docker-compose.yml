@@ -1,0 +1,63 @@
+version: '3.5'
+
+services:
+  mongodb:
+    image: mongo:4.0-xenial
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./databases/mongodb:/data # Map mongodb data to host filesystem
+    expose:
+      - 27017
+    ports:
+      - 27017:27017
+    command: mongod --smallfiles --logpath=/dev/null # --quiet
+  api_pt:
+    container_name: api_pt
+    image: warrenbrasil/node-8.14-alpine:1.0
+    build:
+     context: ./.docker
+     dockerfile: dev.base-image.alpine.Dockerfile
+    user: "1000:1000"
+    tty: true
+    volumes:
+     - ../api_pt:/app
+     - ~/.cache/yarn:/usr/local/share/.cache/yarn # Map Host Yarn cache to container use same cache
+    working_dir: /app
+    command: /bin/ash -c "yarn install && yarn serve"
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+    ports:
+      - "8000:8000"
+      # - "5858:5858"
+      - "9229:9229" # Node debug default port
+    environment:
+      NODE_ENV: development
+  web_pt:
+    container_name: web_pt
+    image: warrenbrasil/node-8.14-alpine:1.0
+    build:
+     context: ./.docker
+     dockerfile: dev.base-image.alpine.Dockerfile
+    user: "1000:1000"
+    tty: true
+    volumes:
+     - ../website_pt:/app
+     - ~/.cache/yarn:/usr/local/share/.cache/yarn # Map Host Yarn cache to container use same cache
+    working_dir: /app
+    command: /bin/ash -c "yarn install && bower install && ./node_modules/.bin/gulp serve --environment=local"
+    links:
+      - api_pt
+    depends_on:
+      - api_pt
+    ports:
+      - "8080:5000"
+      - "8085:35729"
+      # - "5858:5858"
+      # - "9229:9229"
+    environment:
+      NODE_ENV: local
