@@ -49,7 +49,7 @@ services:
      - ../website_pt:/app
      - ~/.cache/yarn:/usr/local/share/.cache/yarn # Map Host Yarn cache to container use same cache
     working_dir: /app
-    command: /bin/ash -c "yarn install && bower install --allow-root && ./node_modules/.bin/gulp serve --environment=local"
+    command: /bin/ash -c "yarn install && bower install --allow-root && cd vuejs2 && yarn install && cd .. && ./node_modules/.bin/gulp serve --environment=local --buildVue"
     links:
       - api_pt
     depends_on:
