@@ -18,8 +18,8 @@ services:
     container_name: api_pt
     image: warrenbrasil/node-8.14-alpine:1.0
     build:
-     context: ./.docker
-     dockerfile: dev.base-image.alpine.Dockerfile
+     context: ./.docker/nodejs
+     dockerfile: 8.14.dev.base-image.alpine.Dockerfile
     # user: "1000:1000" # Keep commented in debian like
     tty: true
     volumes:
@@ -41,8 +41,8 @@ services:
     container_name: web_pt
     image: warrenbrasil/node-8.14-alpine:1.0
     build:
-     context: ./.docker
-     dockerfile: dev.base-image.alpine.Dockerfile
+     context: ./.docker/nodejs
+     dockerfile: 8.14.dev.base-image.alpine.Dockerfile
     # user: "1000:1000" # Keep commented in debian like
     tty: true
     volumes:
